@@ -4,4 +4,3 @@ venv/
 
 chat.db
 
-faiss_index/
