@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, jsonify
 import sqlite3
 from langchain_helper import get_qa_chain
@@ -20,11 +21,9 @@ def init_db():
 
 init_db()  # Ensure DB is initialized
 
-
 @app.route("/")
 def home():
     return render_template("index.html")
-
 
 @app.route("/get_response", methods=["POST"])
 def get_response():
@@ -48,7 +47,6 @@ def get_response():
 
     return jsonify({"response": bot_response})
 
-
 @app.route("/get_chat_history", methods=["GET"])
 def get_chat_history():
     conn = sqlite3.connect("chat.db")
@@ -60,6 +58,6 @@ def get_chat_history():
     chat_history = [{"user": chat[0], "bot": chat[1]} for chat in chats]
     return jsonify(chat_history)
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Run the app on the port provided by Render
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
