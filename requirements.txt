@@ -2,19 +2,6 @@ langchain==0.3.17
 python-dotenv==1.0.1
 streamlit
 tiktoken==0.4.0
-<<<<<<< HEAD
-faiss-cpu
-protobuf~=3.19.0
-sentence-transformers==2.2.2
-google-generativeai==0.8.4
-huggingface-hub==0.28.1
-langchain_google_genai
-langchain-text-splitters==0.3.5
-langsmith==0.3.3
-flask
-langchain_community
-langchain_huggingface
-=======
 faiss-cpu==1.10.0
 sentence-transformers
 google-generativeai==0.8.4
@@ -25,4 +12,4 @@ langsmith==0.3.3
 flask
 langchain_community==0.3.16
 langchain_huggingface==0.1.2
->>>>>>> 4cbc8aa45b3add2fe2bcff3c86bb2069c27e5c68
+
