@@ -4,8 +4,8 @@ from flask_cors import CORS
 import sqlite3
 from langchain_helper import get_qa_chain
 
-api = Flask(__name__)  # Create the Flask app instance
-CORS(api)  # Enable CORS for cross-origin requests (React frontend)
+app = Flask(__name__)  # Create the Flask app instance
+CORS(app)  # Enable CORS for cross-origin requests (React frontend)
 
 # Initialize Database
 def init_db():
@@ -66,4 +66,4 @@ def get_chat_history():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT isn't set
     print(f"Starting the app on port {port}")  # Debugging line to confirm the port
-    api.run(host="0.0.0.0", port=port, debug=True)  # Use 'api' as the app instance
+    app.run(host="0.0.0.0", port=port, debug=True)  # Use 'api' as the app instance
