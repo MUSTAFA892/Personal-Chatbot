@@ -64,5 +64,6 @@ def get_chat_history():
     return jsonify(chat_history), 200
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Use Render's PORT environment variable
+    port = int(os.environ.get("PORT"))  # Render dynamically sets this variable
+    print(f"Starting the app on port {port}")  # Debugging line to confirm the port
     app.run(host="0.0.0.0", port=port, debug=True)
