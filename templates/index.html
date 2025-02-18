@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <title>Chatbot</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title">Let's Chat</div>
+        <div class="box" id="chat-box"></div>
+        
+        <div class="typing-area">
+            <div class="input-field">
+                <input type="text" id="user-input" placeholder="Type your message..." required>
+            </div>
+            <button id="send-button">
+                <i class="fa fa-paper-plane"></i> Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    loadChatHistory();
+
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
+
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        const chatBox = document.getElementById("chat-box");
+
+        // Append user message
+        chatBox.innerHTML += `<div class="item user"><div class="msg">${message}</div></div>`;
+        userInput.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        fetch("/get_response", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Append bot response
+            chatBox.innerHTML += `<div class="item bot"><div class="msg">${data.response}</div></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    }
+
+    // Click event for send button
+    sendButton.addEventListener("click", sendMessage);
+
+    // Pressing "Enter" sends the message
+    userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+});
+
+function loadChatHistory() {
+    fetch("/get_chat_history")
+        .then(response => response.json())
+        .then(data => {
+            const chatBox = document.getElementById("chat-box");
+            data.forEach(chat => {
+                chatBox.innerHTML += `<div class="item user"><div class="msg">${chat.user}</div></div>`;
+                chatBox.innerHTML += `<div class="item bot"><div class="msg">${chat.bot}</div></div>`;
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+}
+    </script>
+</body>
+</html>
