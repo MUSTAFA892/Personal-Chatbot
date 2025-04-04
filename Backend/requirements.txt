@@ -13,3 +13,4 @@ flask
 langchain_community==0.3.16
 langchain_huggingface==0.1.2
 flask-cors
+gunicorn

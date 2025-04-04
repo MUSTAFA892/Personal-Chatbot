@@ -62,8 +62,3 @@ def get_chat_history():
 
     chat_history = [{"user": chat[0], "bot": chat[1]} for chat in chats]
     return jsonify(chat_history), 200
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT isn't set
-    print(f"Starting the app on port {port}")  # Debugging line to confirm the port
-    app.run(host="0.0.0.0", port=port, debug=True)  # Use 'api' as the app instance

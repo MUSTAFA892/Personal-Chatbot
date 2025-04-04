@@ -5,3 +5,5 @@ venv/
 chat.db
 
 faiss_index/
+
+__pycache__
