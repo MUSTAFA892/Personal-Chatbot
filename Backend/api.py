@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Verify Gemini API key
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+GOOGLE_API_KEY = os.environ.get("REACT_APP_GOOGLE_API_KEY")
 if not GOOGLE_API_KEY:
     raise ValueError("GOOGLE_API_KEY environment variable not set. Ensure it is defined in the .env file or environment.")
 

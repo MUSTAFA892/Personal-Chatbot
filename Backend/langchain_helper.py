@@ -24,7 +24,7 @@ def create_vector_db():
         print("Embeddings model loaded successfully!")
 
         # Load CSV data
-        loader = CSVLoader(file_path='Data/sample.csv', source_column="prompt")
+        loader = CSVLoader(file_path='Data/Data.csv', source_column="prompt")
         data = loader.load()
 
         if not data:
@@ -50,7 +50,7 @@ def get_qa_chain():
     try:
         # Ballot Load environment variables
         load_dotenv()
-        GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+        GOOGLE_API_KEY = os.environ.get("REACT_APP_GOOGLE_API_KEY")
         if not GOOGLE_API_KEY:
             raise ValueError("GOOGLE_API_KEY environment variable not set")
 
