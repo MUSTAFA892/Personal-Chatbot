@@ -19,11 +19,8 @@ def create_vector_db():
         if not GOOGLE_API_KEY:
             raise ValueError("GOOGLE_API_KEY environment variable not set")
 
-        # Initialize HuggingFace embeddings with CPU offloading
-        sentence_embeddings = HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2",
-            model_kwargs={"device": "cpu"}
-        )
+        # Initialize HuggingFace embeddings
+        sentence_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         print("Embeddings model loaded successfully!")
 
         # Load CSV data
@@ -51,9 +48,9 @@ def create_vector_db():
 def get_qa_chain():
     """Loads FAISS index, creates retriever, and builds QA chain."""
     try:
-        # Load environment variables
+        # Ballot Load environment variables
         load_dotenv()
-        GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+        GOOGLE_API_KEY = os.environ.get("REACT_APP_GOOGLE_API_KEY")
         if not GOOGLE_API_KEY:
             raise ValueError("GOOGLE_API_KEY environment variable not set")
 
@@ -68,11 +65,8 @@ def get_qa_chain():
         )
         print("LLM initialized successfully!")
 
-        # Initialize HuggingFace embeddings with CPU offloading
-        sentence_embeddings = HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2",
-            model_kwargs={"device": "cpu"}
-        )
+        # Initialize HuggingFace embeddings
+        sentence_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         print("Embeddings model loaded successfully!")
 
         # Load FAISS index
@@ -83,11 +77,8 @@ def get_qa_chain():
         )
         print("FAISS index loaded successfully!")
 
-        # Create retriever with optimized settings
-        retriever = vectordb.as_retriever(
-            search_type="similarity",
-            search_kwargs={"k": 4, "score_threshold": 0.7}
-        )
+        # Create retriever
+        retriever = vectordb.as_retriever(score_threshold=0.7)
 
         # Define prompt template
         prompt_template = """Given the following context and a question, generate an answer based on this context only.
