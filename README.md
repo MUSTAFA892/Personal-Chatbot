@@ -1,147 +1,235 @@
+Personal Chatbot with Flask and React
+This repository contains a chatbot application built with Flask (backend), React (frontend), and LangChain for a Retrieval-Augmented Generation (RAG) pipeline. The chatbot uses a FAISS vector store for efficient FAQ retrieval and SQLite for chat history storage, integrated with Google’s Gemini LLM (gemini-1.5-flash) for intelligent responses. The application is optimized for deployment on Render.
+Features
 
-# Chatbot Project with Flask and Streamlit
+Flask Backend: REST API for processing user messages, managing chat history, and integrating with LangChain for RAG.
+React Frontend: Interactive UI for chatting with the bot, fetching responses from the Flask API.
+LangChain RAG Pipeline: Uses FAISS for vector search and Gemini LLM for generating context-aware responses based on a CSV FAQ dataset.
+SQLite Database: Stores chat history for retrieval via the /history endpoint.
+Render Deployment: Optimized for deployment on Render’s Starter plan, with pre-built FAISS index to avoid memory limits.
 
-This repository is a chatbot application built with **Flask** (for the backend) and **Streamlit** (for the frontend), integrated with **LangChain** for advanced NLP capabilities.
+Table of Contents
 
-## Features
+Flask Backend
+React Frontend
+LangChain RAG Integration
+Project Structure
+Installation
+Usage
+Deployment on Render
+Contributing
+License
 
-- **Flask Backend**: API handling for message processing, integrating LangChain for chatbot functionality.
-- **Streamlit Frontend**: Interactive UI for chatting with the bot.
-- **LangChain Integration**: NLP engine to generate intelligent responses.
 
-## Table of Contents
+Flask Backend
+Overview
+The Flask backend serves as the core of the chatbot, providing endpoints for:
 
-- [Flask Backend](#flask-backend)
-- [Streamlit Frontend](#streamlit-frontend)
-- [LangChain Helper Integration](#langchain-helper-integration)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+/: Welcome message.
+/chat: Process user messages and return bot responses using the RAG pipeline.
+/history: Retrieve the last 50 chat interactions from the SQLite database.
 
----
+Setup
 
-## Flask Backend
+Install Dependencies: Listed in requirements.txt (e.g., Flask, LangChain, FAISS).
+Configure Environment: Set GOOGLE_API_KEY in .env for Gemini LLM access.
+Run the Backend: Use Gunicorn for production or Flask’s development server locally.
 
-### Overview
-The Flask backend provides the server-side logic for the chatbot, handling user inputs and managing interactions with LangChain.
 
-### Setup:
-1. **Install Dependencies**:
-   - Flask
-   - LangChain (for chatbot responses)
+React Frontend
+Overview
+The frontend is a React-based single-page application (e.g., index.html with embedded React) that provides an interactive chat interface. It communicates with the Flask backend via REST API calls to /chat and /history.
+Setup
 
-2. **Run the Backend**:
-   - Use `flask run` to start the backend server.
+Serve the Frontend: Use a static file server (e.g., python -m http.server) or integrate into a larger React app.
+Update API URL: Configure the frontend to point to the Flask backend (e.g., http://localhost:5000 or Render URL).
 
----
 
-## Streamlit Frontend
+LangChain RAG Integration
+Overview
+The langchain_helper.py script implements the RAG pipeline:
 
-### Overview
-The Streamlit frontend provides an easy-to-use interface for users to interact with the chatbot.
+FAISS Vector Store: Loads embeddings from Data/Data.csv for FAQ retrieval.
+HuggingFace Embeddings: Uses all-MiniLM-L6-v2 for text embeddings.
+Gemini LLM: Generates responses based on retrieved FAQs.
+Functions:
+create_vector_db(): Generates the FAISS index from Data/Data.csv.
+get_qa_chain(): Loads the FAISS index and creates the RAG chain for querying.
 
-### Setup:
-1. **Install Dependencies**:
-   - Streamlit (UI for the frontend)
-   
-2. **Run the Frontend**:
-   - Use `streamlit run app.py` to start the frontend server.
 
----
 
-## LangChain Helper Integration
+Example Usage
+from langchain_helper import get_qa_chain
 
-### Overview
-The `langchain_helper.py` script simplifies the integration of LangChain, providing a method for generating responses to user queries.
+chain = get_qa_chain()
+response = chain.invoke({"query": "Who are you?"})
+print(response["result"])  # Outputs response from FAQ or "I don't know."
 
-### Example Function:
-```python
-def get_chatbot_response(message):
-    """
-    Process the user message and get a response from LangChain.
 
-    Arguments:
-    message -- User input to be processed by LangChain.
-    
-    Returns:
-    response -- The chatbot's response.
-    """
-    # LangChain integration code here
-    return response
-```
+Project Structure
+├── Data
+│   └── Data.csv              # FAQ dataset for RAG pipeline
+├── faiss_index
+│   ├── index.faiss           # Pre-built FAISS index
+│   ├── index.pkl             # FAISS metadata
+├── static                    # Static assets (if used)
+├── templates                 # HTML templates (if used)
+├── api.py                    # Flask backend
+├── langchain_helper.py       # LangChain RAG pipeline
+├── .env                      # Environment variables (not committed)
+├── chat.db                   # SQLite database (not committed)
+├── requirements.txt          # Python dependencies
+├── render.yaml               # Render deployment config (optional)
+├── README.md                 # Project documentation
 
----
 
-## Installation
+Installation
+Prerequisites
 
-### Prerequisites
+Python 3.10+
+pip for installing dependencies
+Git for cloning the repository
+Google Cloud account with Gemini API key
+Node.js (optional, for advanced React setup)
 
-Make sure you have Python 3.x installed on your machine. Also, ensure you have `pip` to install dependencies.
+Steps
 
-### Steps:
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/chatbot-flask-streamlit.git
-   cd chatbot-flask-streamlit
-   ```
+Clone the Repository:
+git clone https://github.com/your-username/personal-chatbot.git
+cd personal-chatbot
 
-2. **Install Dependencies**:
-   Install the required dependencies using the `requirements.txt` file:
-   ```bash
-   pip install -r requirements.txt
-   ```
 
-3. **Create the FAISS Index**:
-   - Run the `langchain_helper.py` script to create the FAISS index used for chatbot response generation:
-   ```bash
-   python langchain_helper.py
-   ```
+Install Python Dependencies:
+pip install -r requirements.txt
 
-4. **Start the Flask Backend**:
-   Once the FAISS index is created, start the Flask backend:
-   ```bash
-   flask run
-   ```
 
-5. **Start the Streamlit Frontend**:
-   Finally, run the Streamlit frontend:
-   ```bash
-   streamlit run app.py
-   ```
+Set Up Environment Variables:Create a .env file in the project root:
+GOOGLE_API_KEY=your-gemini-api-key-here
 
----
+Replace your-gemini-api-key-here with your Gemini API key from Google Cloud Console.
 
-## Usage
+Generate FAISS Index:Run langchain_helper.py to create the FAISS index:
+python langchain_helper.py
 
-1. **Interact with the Chatbot**:
-   - Open the Streamlit app in your browser (usually `http://localhost:8501`).
-   - Type a message into the input field and click send.
-   - The message is processed by the Flask backend and returned with a response from LangChain.
+This generates faiss_index/index.faiss and faiss_index/index.pkl.
 
-2. **LangChain Integration**:
-   - The backend communicates with LangChain to generate intelligent responses based on user input.
+Start the Flask Backend:
+python api.py
 
----
+The server runs at http://localhost:5000.
 
-## Contributing
+Serve the React Frontend:Save index.html (or your React app) in a frontend/ directory and serve it:
+cd frontend
+python -m http.server 8000
 
-We welcome contributions to the project! You can help by:
-- Reporting bugs.
-- Improving documentation.
-- Adding new features or enhancements.
+Access at http://localhost:8000.
 
-Feel free to fork the repository and create pull requests with your changes.
 
----
 
-## License
+Usage
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-```
+Interact with the Chatbot:
 
-### Key Updates:
-1. **FAISS Index Creation**: Added the step to run `langchain_helper.py` to create the FAISS index before starting Flask or Streamlit.
-2. **`requirements.txt`**: Updated installation instructions to use `pip install -r requirements.txt` for installing dependencies.
-3. **Ordering of Setup**: Included the step of creating the FAISS index before starting Flask and Streamlit, which is essential for the chatbot to function properly.
+Open the React frontend in your browser (e.g., http://localhost:8000).
+Type a message (e.g., “Who are you?”) and submit.
+The frontend sends the message to /chat, which retrieves a response via the RAG pipeline and stores it in chat.db.
+View chat history via the /history endpoint.
 
+
+Test API Endpoints:
+curl http://localhost:5000
+curl -X POST -H "Content-Type: application/json" -d '{"message":"Who are you?"}' http://localhost:5000/chat
+curl http://localhost:5000/history
+
+
+Update FAQs:
+
+Edit Data/Data.csv with new prompt-response pairs.
+Regenerate the FAISS index:rm -rf faiss_index
+python langchain_helper.py
+
+
+
+
+
+
+Deployment on Render
+Prerequisites
+
+Render account (Starter plan recommended, 512MB RAM)
+GitHub repository with project files
+Pre-built FAISS index committed to faiss_index/
+
+Steps
+
+Prepare Repository:
+
+Commit all files except .env and chat.db (use .gitignore from artifact version 0f6bad51-c0bd-4a0c-a65b-e2234b2c1dc1).
+Push to GitHub:git add .
+git commit -m "Prepare for Render deployment"
+git push origin main
+
+
+
+
+Create Web Service on Render:
+
+Log in to Render and click New > Web Service.
+Connect your GitHub repository.
+Configure:
+Name: personal-chatbot
+Environment: Python
+Region: Choose a close region (e.g., Frankfurt)
+Branch: main
+Plan: Starter (512MB RAM)
+Build Command: pip install -r requirements.txt
+Start Command: gunicorn --bind 0.0.0.0:$PORT --workers 2 api:app
+Environment Variables:
+GOOGLE_API_KEY: Your Gemini API key
+PYTHON_VERSION: 3.10
+WEB_CONCURRENCY: 2
+
+
+
+
+Click Create Web Service.
+
+
+Test Deployment:
+
+Get the Render URL (e.g., https://personal-chatbot.onrender.com).
+Test API endpoints:curl https://personal-chatbot.onrender.com/chat -X POST -H "Content-Type: application/json" -d '{"message":"Who are you?"}'
+
+
+
+
+Update Frontend:
+
+Configure the React frontend to use the Render URL (e.g., https://personal-chatbot.onrender.com).
+
+
+
+Notes
+
+Memory Optimization: The FAISS index is pre-built locally to avoid Render’s memory limits. If memory issues persist, use a lighter embedding model (paraphrase-MiniLM-L3-v2) or upgrade to the Standard plan (1GB RAM).
+FAISS Updates: Regenerate and recommit faiss_index/ if Data/Data.csv changes.
+
+
+Contributing
+Contributions are welcome! You can help by:
+
+Reporting bugs or suggesting features.
+Improving documentation or code efficiency.
+Adding new FAQ entries to Data/Data.csv.
+
+To contribute:
+
+Fork the repository.
+Create a feature branch (git checkout -b feature/your-feature).
+Commit changes (git commit -m "Add your feature").
+Push to the branch (git push origin feature/your-feature).
+Open a pull request.
+
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
